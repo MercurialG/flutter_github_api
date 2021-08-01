@@ -3,7 +3,7 @@ class Users {
   String avatarUrl;
   int followers;
 
-  Users({this.login, this.avatarUrl,this.followers});
+  Users({required this.login, required this.avatarUrl, required this.followers});
 
 
 
@@ -20,7 +20,7 @@ class Users {
 class AllUsers {
   List<Users> users;
 
-  AllUsers({this.users});
+  AllUsers({required this.users});
 
   factory AllUsers.fromJson(List<dynamic> json) {
     List<Users> users = <Users>[];

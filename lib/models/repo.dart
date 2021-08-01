@@ -8,13 +8,13 @@ class Repo {
   String language;
 
   Repo(
-      {this.name,
-      this.description,
-      this.updatedAt,
-      this.defaultBranch,
-      this.forks,
-      this.stargazersCount,
-      this.language});
+      { required this.name,
+        required this.description,
+        required this.updatedAt,
+        required this.defaultBranch,
+        required this.forks,
+        required this.stargazersCount,
+        required this.language});
 
   factory Repo.fromJson(Map<String, dynamic> json) {
     return Repo(
@@ -32,7 +32,7 @@ class Repo {
 class AllRepos {
   List<Repo> repos;
 
-  AllRepos({this.repos});
+  AllRepos({required this.repos});
 
   factory AllRepos.fromJson(List<dynamic> json) {
     List<Repo> repos = <Repo>[];
