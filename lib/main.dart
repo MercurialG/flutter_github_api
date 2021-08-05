@@ -1,8 +1,8 @@
-
+import 'package:flutter_github_api/models/users.dart';
+import 'package:flutter_github_api/views/ReposPage.dart';
 import 'package:flutter_github_api/views/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,57 +19,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: title,
-    theme: ThemeData(primarySwatch: Colors.blue),
-    home: UsersSearch(),
-  );
+        debugShowCheckedModeBanner: false,
+        title: title,
+        theme: ThemeData(primarySwatch: Colors.blue),
+        routes: {
+          '/': (context) => UsersSearch(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == RepoScreen.RepoScreenRoute) {
+            final args = settings.arguments as User;
+
+            return MaterialPageRoute(
+              builder: (context) {
+                return RepoScreen(
+                    login: args.login,
+                    avatarUrl: args.avatarUrl,
+                    followers: args.followers,);
+                    // reposUrl : args.reposUrl);
+              },
+            );
+          }
+        },
+      );
 }
 
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int index = 0;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    bottomNavigationBar: buildBottomBar(),
-    body: buildPages(),
-  );
-
-  Widget buildBottomBar() {
-    final style = TextStyle(color: Colors.white);
-
-    return BottomNavigationBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white70,
-      currentIndex: index,
-      items: [
-        BottomNavigationBarItem(
-          icon: Text('Filter List', style: style),
-          title: Text('Local'),
-        ),
-        BottomNavigationBarItem(
-          icon: Text('Filter List', style: style),
-          title: Text('Network'),
-        ),
-      ],
-      onTap: (int index) => setState(() => this.index = index),
-    );
-  }
-
-  Widget buildPages() {
-    switch (index) {
-      case 0:
-        return Text('NICE ONE');
-      case 1:
-        return UsersSearch();
-      default:
-        return Container();
-    }
-  }
-}

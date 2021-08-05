@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_github_api/utils/api.dart';
+import 'package:flutter_github_api/utils/UsersApi.dart';
 import 'package:flutter_github_api/main.dart';
 import 'package:flutter_github_api/models/users.dart';
 import 'package:flutter_github_api/controllers/search.dart';
@@ -18,10 +18,10 @@ class UsersSearchState extends State<UsersSearch> {
   String query = 'mercurialg';
   Timer? debouncer;
 
+
   @override
   void initState() {
     super.initState();
-
     init();
   }
 
@@ -49,8 +49,14 @@ class UsersSearchState extends State<UsersSearch> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context)  {
+
+
+
+    return Scaffold(
+
         appBar: AppBar(
+
           backgroundColor: Color(0xFF213641),
           title: Text(MyApp.title),
           centerTitle: true,
@@ -73,7 +79,7 @@ class UsersSearchState extends State<UsersSearch> {
             ],
           ),
         ),
-      );
+      );}
 
   Widget buildSearch() => SearchWidget(
         text: query,
@@ -93,7 +99,8 @@ class UsersSearchState extends State<UsersSearch> {
       });
 
   Widget buildUser(User user) => GestureDetector(
-    // onTap: ReposPage(),
+    onTap: () {Navigator.pushNamed(context, RepoScreen.RepoScreenRoute,
+    arguments: User(login: user.login, avatarUrl: user.avatarUrl,followers: user.followers));},
     child: Card(
         child: ListTile(
           leading: Image.network(
