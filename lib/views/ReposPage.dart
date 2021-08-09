@@ -1,137 +1,125 @@
-import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter_github_api/models/repo.dart';
-import 'package:flutter_github_api/models/users.dart';
+import 'package:flutter_github_api/models/Repo.dart';
 import 'package:flutter_github_api/utils/ReposApi.dart';
 
-
 class RepoScreen extends StatefulWidget {
-  const RepoScreen({Key? key, required this.login, avatarUrl, followers}) : super(key: key);
+  const RepoScreen({Key? key, required this.login, followers, this.avatarUrl})
+      : super(key: key);
+
   @override
   _RepoScreenState createState() => _RepoScreenState();
   static const RepoScreenRoute = '/RepoScreen';
   final login;
+  final avatarUrl;
 }
 
 class _RepoScreenState extends State<RepoScreen> {
   final reposApi = ReposApi();
-  late Future<All> futureRepo;
-  // late Future<All> ge;
 
+  List<Repo> reposList = [];
 
   @override
   void initState() {
     super.initState();
-    futureRepo = reposApi.getRepos(widget.login);
+    initRepos(widget.login);
   }
 
-  // Future init(login) async {
-  //   final allRepos = await ReposApi.getRepos(login);
-  //   print(allRepos);
-  //
-  // }
-
+  void initRepos(login) async {
+    final res = await ReposApi.getRepos(login);
+    setState(() {
+      reposList = res;
+    });
+  }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Container(
-          child: FutureBuilder<All>(
-              future: futureRepo,
-              builder: (context, AsyncSnapshot snapshot) {
-
-                if (snapshot.hasData) {
-                  List<Repo> repos = <Repo>[];
-                  print(snapshot.data.repos);
-                  for (int i = 0; i < snapshot.data!.repos.length; i++) {
-                    repos.add(
-                      Repo(
-                        name: snapshot.data!.repos[i].name,
-                        description: snapshot.data!.repos[i].description,
-                        updatedAt: snapshot.data!.repos[i].updatedAt,
-                        defaultBranch: snapshot.data!.repos[i].defaultBranch,
-                        forks: snapshot.data!.repos[i].forks,
-                        stargazersCount: snapshot.data!.repos[i]
-                            .stargazersCount,
-                        language: snapshot.data!.repos[i].language,
-                      ),
-                    );
-                    print(repos);
-                  }
-                  return ListView(
-                    children: repos.map((r) =>
-                        Card(
-                          color: Colors.deepPurple[300],
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      r.name,
-                                      style: TextStyle(fontSize: 30.0),
-                                    ),
-                                    Text(r.stargazersCount.toString()),
-                                  ],
-                                ),
-                                Text(r.description,
-                                    style: TextStyle(fontSize: 20.0)),
-                                Text(r.description,
-                                    style: TextStyle(fontSize: 20.0)),
-                                Text(r.updatedAt,
-                                    style: TextStyle(fontSize: 20.0)),
-                                Text(r.defaultBranch,
-                                    style: TextStyle(fontSize: 20.0)),
-                                Text(r.forks.toString()),
-                                Text(r.stargazersCount.toString()),
-                                Text(r.language,
-                                    style: TextStyle(fontSize: 20.0)),
-                              ],
-                            ),
-                          ),
-                        ))
-                        .toList(),
-                  );
-                } else if (snapshot.hasError) {
-                  print(snapshot.error);
-                  return Center(child: Text('Error'));
-
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              }),
+  Widget build(BuildContext context) {
+    final list = buildRepos(reposList);
+    return Scaffold(
+        backgroundColor: Color(0xD9061D29),
+        appBar: AppBar(
+          backgroundColor: Color(0xFF213641),
         ),
-      )
-  );
-  // Widget build(BuildContext context) {
-  //
-  //   return Scaffold(
-  //     appBar: AppBar(),
-  //     body: ListView.builder(
-  //       itemCount: allRepos.length,
-  //       itemBuilder : (context, index) {
-  //         final repo = allRepos[index];
-  //       return new ListTile(
-  //       title: Text(repo.repos[index].name),
-  //       subtitle: Text(repo.repos[index].description),
-  //       );
-  //   })
-  //   );
-  // }
+        body: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Container(
+                    color: Color(0xD9061D29),
+                    child: list),
+            ));
+  }
+
+  Widget buildRepos(List<Repo> repos) => ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: repos.length,
+        itemBuilder: (context, index) {
+          final repo = repos[index];
+          print(repo.name);
+          return Card(
+              color: Color(0xD9061D29),
+              child: Column(
+                children: [
+                  Text(
+                    repo.name,
+                    style:
+                        TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                  ),
+                  Text(
+                    repo.description,
+                    style:
+                        TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                  ),
+                  Text(
+                    "Updated at: " + repo.updatedAt,
+                    style:
+                        TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                  ),
+                  Text(
+                    "Default branch: " + repo.defaultBranch,
+                    style:
+                        TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Forks: " + repo.forks.toString() + " ",
+                        style:
+                            TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                      ),
+                      Text(
+                        "Stars: " + repo.stargazersCount.toString() + " ",
+                        style:
+                            TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                      ),
+                      Text(
+                        "Language: " + repo.language,
+                        style:
+                            TextStyle(fontFamily: "roboto", color: (Colors.white)),
+                      ),
+                    ],
+                  ),
+                ],
+              ));
+        },
+      );
 }
+//
+//
+// Widget build(BuildContext context) {
+//
+//   return Scaffold(
+//     appBar: AppBar(),
+//     body: ListView.builder(
+//       itemCount: allRepos.length,
+//       itemBuilder : (context, index) {
+//         final repo = allRepos[index];
+//       return new ListTile(
+//       title: Text(repo.repos[index].name),
+//       subtitle: Text(repo.repos[index].description),
+//       );
+//   })
+//   );
+// }
+
 // class RepoScreen extends StatefulWidget {
 //   @override
 //   _RepoScreenState createState() => _RepoScreenState();
@@ -183,9 +171,6 @@ Widget build(BuildContext context) {
 //   }
 //
 // }
-
-
-
 
 // class _RepoScreenState extends State<RepoScreen> {
 //   late Future<AllRepos> futureRepo;
@@ -290,4 +275,3 @@ Widget build(BuildContext context) {
 //           ),
 //         ));
 //   }
- }

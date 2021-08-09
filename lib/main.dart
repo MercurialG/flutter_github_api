@@ -1,4 +1,4 @@
-import 'package:flutter_github_api/models/users.dart';
+import 'package:flutter_github_api/models/Users.dart';
 import 'package:flutter_github_api/views/ReposPage.dart';
 import 'package:flutter_github_api/views/SearchPage.dart';
 import 'package:flutter/material.dart';

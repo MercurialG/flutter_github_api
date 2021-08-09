@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_github_api/models/users.dart';
+import 'package:flutter_github_api/models/Users.dart';
 
 class UsersApi {
   static Future<List<User>> getUsers(String query) async {
@@ -15,7 +15,6 @@ class UsersApi {
         users.add(User.fromJson(
             response.data["items"][i], followersResponse.data.length));
       }
-
       return users;
     } else {
       throw Exception();
