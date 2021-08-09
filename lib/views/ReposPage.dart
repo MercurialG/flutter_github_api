@@ -3,14 +3,14 @@ import 'package:flutter_github_api/models/Repo.dart';
 import 'package:flutter_github_api/utils/ReposApi.dart';
 
 class RepoScreen extends StatefulWidget {
-  const RepoScreen({Key? key, required this.login, followers, this.avatarUrl})
+  const RepoScreen({Key? key, required this.login, followers, avatarUrl})
       : super(key: key);
 
   @override
   _RepoScreenState createState() => _RepoScreenState();
   static const RepoScreenRoute = '/RepoScreen';
   final login;
-  final avatarUrl;
+
 }
 
 class _RepoScreenState extends State<RepoScreen> {
@@ -26,6 +26,7 @@ class _RepoScreenState extends State<RepoScreen> {
 
   void initRepos(login) async {
     final res = await ReposApi.getRepos(login);
+    //Inserting login from clicked user to ReposApi
     setState(() {
       reposList = res;
     });

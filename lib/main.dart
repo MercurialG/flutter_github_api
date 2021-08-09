@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => UsersSearch(),
         },
+        //Sending username from clicked user to ReposPage
         onGenerateRoute: (settings) {
           if (settings.name == RepoScreen.RepoScreenRoute) {
             final args = settings.arguments as User;
